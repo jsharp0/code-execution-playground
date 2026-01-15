@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "dgSpecHash": "UkXsbEDrOYQ=",
+  "success": true,
+  "projectFilePath": "/Users/jennasharp/personal-projects/code-execution-playground/src/McpServer/McpServer.csproj",
+  "expectedPackageFiles": [
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.ai.abstractions/10.1.1/microsoft.extensions.ai.abstractions.10.1.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.configuration.abstractions/10.0.1/microsoft.extensions.configuration.abstractions.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.dependencyinjection.abstractions/10.0.1/microsoft.extensions.dependencyinjection.abstractions.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.diagnostics.abstractions/10.0.1/microsoft.extensions.diagnostics.abstractions.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.fileproviders.abstractions/10.0.1/microsoft.extensions.fileproviders.abstractions.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.hosting.abstractions/10.0.1/microsoft.extensions.hosting.abstractions.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.logging.abstractions/10.0.1/microsoft.extensions.logging.abstractions.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.options/10.0.1/microsoft.extensions.options.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.extensions.primitives/10.0.1/microsoft.extensions.primitives.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/modelcontextprotocol/0.6.0-preview.1/modelcontextprotocol.0.6.0-preview.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/modelcontextprotocol.aspnetcore/0.6.0-preview.1/modelcontextprotocol.aspnetcore.0.6.0-preview.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/modelcontextprotocol.core/0.6.0-preview.1/modelcontextprotocol.core.0.6.0-preview.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/system.diagnostics.diagnosticsource/10.0.1/system.diagnostics.diagnosticsource.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/system.io.pipelines/10.0.1/system.io.pipelines.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/system.net.serversentevents/10.0.1/system.net.serversentevents.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/system.text.encodings.web/10.0.1/system.text.encodings.web.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/system.text.json/10.0.1/system.text.json.10.0.1.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.netcore.app.ref/8.0.15/microsoft.netcore.app.ref.8.0.15.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.aspnetcore.app.ref/8.0.15/microsoft.aspnetcore.app.ref.8.0.15.nupkg.sha512",
+    "/Users/jennasharp/.nuget/packages/microsoft.netcore.app.host.osx-arm64/8.0.15/microsoft.netcore.app.host.osx-arm64.8.0.15.nupkg.sha512"
+  ],
+  "logs": []
+}
