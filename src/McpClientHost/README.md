@@ -1,6 +1,6 @@
 # MCP Client Host
 
-Console app that connects to an MCP server, lists tools, and orchestrates OpenAI tool calls.
+ASP.NET Core service that connects to an MCP server, lists tools, and exposes a `POST /chat` endpoint for the React UI.
 
 ## Configuration
 
@@ -20,4 +20,20 @@ Console app that connects to an MCP server, lists tools, and orchestrates OpenAI
 dotnet run --project src/McpClientHost/McpClientHost.csproj
 ```
 
-Paste a prompt, and the host will route tool calls to the MCP server until the model returns a final answer.
+## API
+
+`POST /chat`
+
+```json
+{
+  "message": "Hello from the React app"
+}
+```
+
+Response:
+
+```json
+{
+  "reply": "..."
+}
+```

@@ -2,40 +2,46 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using COA.Mcp.Client;
 using COA.Mcp.Protocol;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using System.Text.Json.Serialization;
 
-var configuration = new ConfigurationBuilder()
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Configuration
     .SetBasePath(AppContext.BaseDirectory)
     .AddJsonFile("appsettings.json", optional: true)
-    .AddEnvironmentVariables()
-    .Build();
+    .AddEnvironmentVariables();
 
-var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
-var logger = loggerFactory.CreateLogger("McpClientHost");
+builder.Services.AddCors(options =>
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod()));
 
-var openAiSection = configuration.GetSection("OpenAI");
+var app = builder.Build();
+
+app.UseCors();
+
+var logger = app.Logger;
+
+var openAiSection = app.Configuration.GetSection("OpenAI");
 var openAiApiKey = openAiSection["ApiKey"];
 var openAiBaseUrl = openAiSection["BaseUrl"] ?? "https://api.openai.com/v1";
 var openAiModel = openAiSection["Model"] ?? "gpt-4o-mini";
 
-var mcpSection = configuration.GetSection("Mcp");
+var mcpSection = app.Configuration.GetSection("Mcp");
 var mcpServerUrl = mcpSection["ServerUrl"];
 var mcpApiKey = mcpSection["ApiKey"];
 
 if (string.IsNullOrWhiteSpace(openAiApiKey))
 {
-    logger.LogError("OpenAI API key is missing. Set OpenAI__ApiKey in appsettings.json or as an environment variable.");
-    return;
+    throw new InvalidOperationException("OpenAI API key is missing. Set OpenAI__ApiKey in appsettings.json or as an environment variable.");
 }
 
 if (string.IsNullOrWhiteSpace(mcpServerUrl))
 {
-    logger.LogError("MCP server URL is missing. Set Mcp__ServerUrl in appsettings.json or as an environment variable.");
-    return;
+    throw new InvalidOperationException("MCP server URL is missing. Set Mcp__ServerUrl in appsettings.json or as an environment variable.");
 }
 
 var clientBuilder = McpClientBuilder
@@ -76,43 +82,49 @@ var tools = listToolsResult.Tools
     })
     .ToList();
 
-var conversation = new List<ChatMessageRequest>
+app.MapGet("/", () => Results.Ok(new { status = "ok" }));
+
+app.MapPost("/chat", async (ChatRequest request) =>
 {
-    new()
+    if (string.IsNullOrWhiteSpace(request.Message))
     {
-        Role = "system",
-        Content = "You are a helpful assistant. Use the available tools when needed."
-    }
-};
-
-logger.LogInformation("Enter a prompt (empty line to exit).");
-
-while (true)
-{
-    Console.Write("\n> ");
-    var userInput = Console.ReadLine();
-
-    if (string.IsNullOrWhiteSpace(userInput))
-    {
-        break;
+        return Results.BadRequest(new { message = "Message is required." });
     }
 
-    conversation.Add(new ChatMessageRequest
+    var conversation = new List<ChatMessageRequest>
     {
-        Role = "user",
-        Content = userInput
-    });
+        new()
+        {
+            Role = "system",
+            Content = "You are a helpful assistant. Use the available tools when needed."
+        },
+        new()
+        {
+            Role = "user",
+            Content = request.Message
+        }
+    };
 
-    var finalResponse = await RunToolLoopAsync(
-        httpClient,
-        openAiModel,
-        tools,
-        conversation,
-        mcpClient,
-        logger);
+    try
+    {
+        var reply = await RunToolLoopAsync(
+            httpClient,
+            openAiModel,
+            tools,
+            conversation,
+            mcpClient,
+            logger);
 
-    Console.WriteLine($"\n{finalResponse}\n");
-}
+        return Results.Ok(new ChatResponse(reply));
+    }
+    catch (Exception ex)
+    {
+        logger.LogError(ex, "Failed to process chat request.");
+        return Results.Problem("Failed to process chat request.");
+    }
+});
+
+await app.RunAsync();
 
 static async Task<string> RunToolLoopAsync(
     HttpClient httpClient,
@@ -241,8 +253,23 @@ static JsonSerializerOptions JsonOptions()
     return new JsonSerializerOptions
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
     };
+}
+
+sealed class ChatRequest
+{
+    public string? Message { get; init; }
+}
+
+sealed class ChatResponse
+{
+    public ChatResponse(string reply)
+    {
+        Reply = reply;
+    }
+
+    public string Reply { get; }
 }
 
 sealed class ChatCompletionRequest
